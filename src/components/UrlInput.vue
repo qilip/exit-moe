@@ -6,8 +6,10 @@
     <div class="flex justify-center mb-4">
       <input type="text" spellcheck="false" placeholder="https://example.com" autofocus
       class="w-full border-2 border-gray-300 hover:border-gray-400
-      focus:outline-none focus:border-gray-500 text-gray-700 rounded-lg text-lg pl-3 pr-3 py-2"/>
-      <button class="ml-4 inline-flex text-gray-700 py-3 px-6 shadow-lg bg-cyan-300 hover:bg-cyan-400 shadow-cyan-200 rounded-lg" @click="shorten">
+      focus:outline-none focus:border-gray-500 text-gray-700 rounded-lg text-lg pl-3 pr-3 py-2"
+      v-model.trim="longUrl" v-on:keyup="urlValidate" v-on:keyup.enter="shorten"/>
+      <button class="ml-4 inline-flex text-gray-700 py-3 px-6 shadow-lg bg-cyan-300 hover:bg-cyan-400 shadow-cyan-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+      :disabled="isUrl===false" @click.once="shorten">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
         </svg>
@@ -41,23 +43,42 @@
 </template>
 
 <script>
+import axios from 'redaxios';
+
 export default {
   name:'UrlInput',
   data() {
     return {
+      longUrl: '',
+      isUrl: false,
       shortenedLink: 'shortenedURL',
       isShortened: false,
       beforeCopy: true,
     }
   },
   methods: {
+    urlValidate() {
+      if (this.longUrl.match(/^(http|https):\/\/[^ "]+\.[^ "]+$/)) {
+        this.isUrl = true;
+      } else {
+        this.isUrl = false;
+      }
+    },
     linkCopy() {
       navigator.clipboard.writeText(this.shortenedLink);
       this.beforeCopy = false;
     },
     shorten() {
-      this.shortenedLink = 'https://exit.moe/SxWlI12';
-      this.isShortened = true;
+      (async () => {
+        try {
+          const response = await axios.post('/api/shorten', { url: this.longUrl });
+          this.shortenedLink = response.data.shortenedUrl;
+          this.isShortened = true;
+        } catch (error) {
+          //TODO: 오류메시지 출력
+          console.log(error);
+        }
+      })();
     }
   }
 }
