@@ -4,7 +4,7 @@
       <h1 class="font-['lato'] font-thin text-8xl text-gray-900">exit.moe</h1>
     </div>
     <div class="flex justify-center mb-4">
-      <input type="text" spellcheck="false" placeholder="https://example.com" autofocus
+      <input type="text" spellcheck="false" placeholder="https://example.com" autofocus autocomplete=”off”
       class="w-full border-2 border-gray-300 hover:border-gray-400
       focus:outline-none focus:border-gray-500 text-gray-700 rounded-lg text-lg pl-3 pr-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
       v-model.trim="longUrl" v-on:keyup="urlValidate" v-on:keyup.enter="shorten" :disabled="isShortened===true"/>
