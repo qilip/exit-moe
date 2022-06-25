@@ -71,7 +71,7 @@ export default {
     shorten() {
       (async () => {
         try {
-          const response = await axios.post('/shorten', { url: this.longUrl });
+          const response = await axios.post('https://api.exit.moe/shorten', { url: this.longUrl });
           this.shortenedLink = response.data.shortenedUrl;
           this.isShortened = true;
         } catch (error) {
