@@ -1,0 +1,59 @@
+<template>
+  <div class="text-center flex flex-col items-center">
+    <button class="shortened-link text-2xl inline-flex py-3 px-5 rounded-lg shadow-lg items-center focus:outline-none flex"
+    v-bind:class="[
+      beforeCopy ? 'bg-gray-100 hover:bg-gray-200 shadow-gray-100' : 'bg-green-300 hover:bg-green-400 shadow-green-200',
+      urlprops.isShortened ? '' : 'invisible',
+    ]"
+    @click="linkCopy">
+      {{ urlprops.shortenedLink }}
+      <div class="ml-3" v-if="beforeCopy">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+          <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+        </svg>
+      </div>
+      <div class="ml-3" v-else>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+        </svg>
+      </div>
+    </button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'MessageBox',
+  props: {
+    urlprops: {
+      shortenedLink: String,
+      isShortened: Boolean,
+    }
+  },
+  data() {
+    return {
+      beforeCopy: true,
+    }
+  },
+  methods: {
+    linkCopy() {
+      (async() => {
+        try {
+          await navigator.clipboard.writeText(this.shortenedLink);
+        } catch (error) {
+          // 카카오톡 인앱브라우저 Fallback
+          const copyArea = document.createElement('textarea');
+          document.body.appendChild(copyArea);
+          copyArea.value = this.shortenedLink;
+          copyArea.select();
+          copyArea.setSelectionRange(0, 99999);
+          document.execCommand('copy');
+          document.body.removeChild(copyArea);
+        }
+      })();
+      this.beforeCopy = false;
+    },
+  }
+}
+</script>
