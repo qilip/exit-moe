@@ -67,7 +67,6 @@ export default {
     linkCopy() {
       (async() => {
         try {
-          throw new Error('copy error');
           await navigator.clipboard.writeText(this.shortenedLink);
         } catch (error) {
           const copyArea = document.createElement('textarea');
