@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto item-center justify-center font-light flex flex-col">
+  <div class="container mx-auto justify-center font-light flex flex-col">
     <div>
       <h1 class="font-['lato'] font-thin text-8xl text-gray-900">exit.moe</h1>
     </div>
@@ -15,7 +15,7 @@
         </svg>
       </button>
     </div>
-    <div class="text-center">
+    <div class="text-center flex flex-col items-center">
       <p>
         링크는 30일 뒤 만료됩니다.
       </p>
@@ -65,7 +65,20 @@ export default {
       }
     },
     linkCopy() {
-      navigator.clipboard.writeText(this.shortenedLink);
+      (async() => {
+        try {
+          throw new Error('copy error');
+          await navigator.clipboard.writeText(this.shortenedLink);
+        } catch (error) {
+          const copyArea = document.createElement('textarea');
+          document.body.appendChild(copyArea);
+          copyArea.value = this.shortenedLink;
+          copyArea.select();
+          copyArea.setSelectionRange(0, 99999);
+          document.execCommand('copy');
+          document.body.removeChild(copyArea);
+        }
+      })();
       this.beforeCopy = false;
     },
     shorten() {
