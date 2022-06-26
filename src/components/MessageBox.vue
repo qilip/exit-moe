@@ -1,10 +1,22 @@
 <template>
-  <div class="text-center flex flex-col items-center">
+  <div class="text-center flex flex-col items-center h-28 my-4">
+    <div class="shortened-link text-2xl inline-flex py-3 px-5 rounded-lg shadow-lg items-center focus:outline-none flex bg-rose-300 hover:bg-rose-400 shadow-rose-200"
+    v-if="urlprops.longUrl.invalid || urlprops.longUrl.exitmoe">
+      <div class="mr-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+        </svg>
+      </div>
+      <p v-if="urlprops.longUrl.invalid">
+        https:// 로 시작하는 URL을 입력해주세요
+      </p>
+      <p v-if="urlprops.longUrl.exitmoe">
+        이런거 안받아요
+      </p>
+    </div>
     <button class="shortened-link text-2xl inline-flex py-3 px-5 rounded-lg shadow-lg items-center focus:outline-none flex"
-    v-bind:class="[
-      beforeCopy ? 'bg-gray-100 hover:bg-gray-200 shadow-gray-100' : 'bg-green-300 hover:bg-green-400 shadow-green-200',
-      urlprops.isShortened ? '' : 'invisible',
-    ]"
+    v-bind:class="[beforeCopy ? 'bg-gray-100 hover:bg-gray-200 shadow-gray-100' : 'bg-green-300 hover:bg-green-400 shadow-green-200']"
+    v-if="urlprops.isShortened"
     @click="linkCopy">
       {{ urlprops.shortenedLink }}
       <div class="ml-3" v-if="beforeCopy">
@@ -27,6 +39,7 @@ export default {
   name: 'MessageBox',
   props: {
     urlprops: {
+      longUrl: Object,
       shortenedLink: String,
       isShortened: Boolean,
     }

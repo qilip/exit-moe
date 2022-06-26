@@ -7,10 +7,10 @@
       <input type="url" spellcheck="false" placeholder="https://example.com" autofocus autocomplete=”off”
       class="w-full border-2 border-gray-300 hover:border-gray-400
       focus:outline-none focus:border-gray-500 text-gray-700 rounded-lg text-lg pl-3 pr-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
-      v-model.trim="longUrl" v-on:keyup="urlValidate" v-on:keyup.enter="shorten" :disabled="isShortened===true"/>
+      v-model.trim="longUrl.url" v-on:keyup.enter="shorten" :disabled="isShortened===true"/>
       <button class="ml-4 inline-flex text-gray-700 py-3 px-6 shadow-lg bg-cyan-300 hover:bg-cyan-400 shadow-cyan-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-      :disabled="!longUrl || isShortened===true" @click.once="shorten">
-        <svg v-if="!longUrl || isShortened===true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+      :disabled="isShortened===true" @click="shorten">
+        <svg v-if="isShortened===true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
           <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
         </svg>
         <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
@@ -18,7 +18,7 @@
         </svg>
       </button>
     </div>
-    <MessageBox v-bind:urlprops="{shortenedLink, isShortened}"/>
+    <MessageBox v-bind:urlprops="{longUrl, shortenedLink, isShortened}"/>
   </div>
 </template>
 
@@ -33,28 +33,31 @@ export default {
   },
   data() {
     return {
-      longUrl: '',
-      shortenedLink: 'shortenedURL',
+      longUrl: {
+        url: '',
+        invalid: false,
+        exitmoe: false,
+      },
+      shortenedLink: 'please wait...',
       isShortened: false,
     }
   },
   methods: {
-    isUrl () {
-      if (this.longUrl.match(/^(http|https):\/\/[^ "]+\.[^ "]+$/)) {
-        return true;
-      } else {
-        return false;
-      }
+    urlValidate () {
+      const isUrlRegEx = /^(http|https):\/\/[^ "]+\.[^ "]+$/i;
+      const isExitmoeRegEx = /^(http|https):\/\/(.*\.)?(exit\.moe)(:[0-9]{1,5})?(\/.*)?$/i;
+      this.longUrl.invalid = !isUrlRegEx.test(this.longUrl.url);
+      this.longUrl.exitmoe = isExitmoeRegEx.test(this.longUrl.url);
+      if(this.longUrl.invalid || this.longUrl.exitmoe) return false;
+      else return true;
     },
     shorten() {
-      if(this.isUrl() === false){
-
-      }
+      if(this.urlValidate() === false) return;
 
       this.isShortened = true;
       (async () => {
         try {
-          const response = await axios.post('https://api.exit.moe/shorten', { url: this.longUrl });
+          const response = await axios.post('https://api.exit.moe/shorten', { url: this.longUrl.url });
           this.shortenedLink = 'https://exit.moe/' + response.data.slug;
         } catch (error) {
           //TODO: 오류메시지 출력
