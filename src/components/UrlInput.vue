@@ -44,8 +44,8 @@ export default {
   },
   methods: {
     urlValidate () {
-      const isUrlRegEx = /^(http|https):\/\/[^ "]+\.[^ "]+$/i;
-      const isExitmoeRegEx = /^(http|https):\/\/(.*\.)?(exit\.moe)(:[0-9]{1,5})?(\/.*)?$/i;
+      const isUrlRegEx = /^(http|https):(\/)+[^ "]+\.[^ "]+$/i;
+      const isExitmoeRegEx = /^(http|https):(\/)+(.*\.)?(exit\.moe)(:[0-9]{1,5})?(\/.*)?$/i;
       this.longUrl.invalid = !isUrlRegEx.test(this.longUrl.url);
       this.longUrl.exitmoe = isExitmoeRegEx.test(this.longUrl.url);
       if(this.longUrl.invalid || this.longUrl.exitmoe) return false;
