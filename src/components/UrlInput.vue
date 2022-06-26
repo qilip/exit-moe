@@ -4,7 +4,7 @@
       <h1 class="font-['lato'] font-thin text-8xl text-gray-900">exit.moe</h1>
     </div>
     <div class="flex justify-center mb-4">
-      <input type="text" spellcheck="false" placeholder="https://example.com" autofocus autocomplete=”off”
+      <input type="url" spellcheck="false" placeholder="https://example.com" autofocus autocomplete=”off”
       class="w-full border-2 border-gray-300 hover:border-gray-400
       focus:outline-none focus:border-gray-500 text-gray-700 rounded-lg text-lg pl-3 pr-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
       v-model.trim="longUrl" v-on:keyup="urlValidate" v-on:keyup.enter="shorten" :disabled="isShortened===true"/>
@@ -69,15 +69,16 @@ export default {
       this.beforeCopy = false;
     },
     shorten() {
+      this.isShortened = true;
       (async () => {
         try {
           const response = await axios.post('https://api.exit.moe/shorten', { url: this.longUrl });
-          this.shortenedLink = response.data.shortenedUrl;
-          this.isShortened = true;
+          this.shortenedLink = 'https://exit.moe/' + response.data.slug;
         } catch (error) {
           //TODO: 오류메시지 출력
           console.log(error);
         }
+        // 재시도 버튼 활성화
       })();
     }
   }
