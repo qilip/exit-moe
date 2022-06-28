@@ -10,6 +10,7 @@ module.exports = {
     extend: {
       fontFamily: {
         'sans': ['Noto Sans', 'Noto Sans KR', ...defaultTheme.fontFamily.sans],
+        'localsans': [...defaultTheme.fontFamily.sans],
       },
     }
   },
