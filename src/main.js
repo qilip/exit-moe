@@ -5,7 +5,13 @@ import './index.css';
 
 const routes = [
   { path: '/', component: () => import('./Home.vue') },
-  { path: '/:slug', component: () => import('./Redirect.vue') }
+  {
+    path: '/:slug',
+    component: () => import('./Redirect.vue'),
+    beforeEnter(to, from, next) {
+      window.location.href = `https://api.exit.moe/${to.params.slug}`;
+    }
+  }
 ];
 
 const router = createRouter({

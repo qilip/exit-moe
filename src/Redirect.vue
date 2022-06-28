@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen flex items-center justify-center text-center font-light">
+  <div class="h-screen flex items-center justify-center text-center font-light font-localsans">
     <p>
       redirecting...
     </p>
