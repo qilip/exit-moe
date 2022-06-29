@@ -7,10 +7,10 @@
       <input type="url" spellcheck="false" placeholder="https://example.com" autofocus autocomplete=”off”
       class="w-full border-2 border-gray-300 hover:border-gray-400
       focus:outline-none focus:border-gray-500 text-gray-700 rounded-lg text-lg pl-3 pr-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
-      v-model.trim="longUrl.url" v-on:keyup.enter="shorten" :disabled="isShortened===true"/>
+      v-model.trim="longUrl.url" v-on:keyup.enter="shorten" :disabled="inputDisabled"/>
       <button class="ml-4 inline-flex text-gray-700 py-3 px-6 shadow-lg bg-cyan-300 hover:bg-cyan-400 shadow-cyan-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-      :disabled="isShortened===true" @click="shorten">
-        <svg v-if="isShortened===true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+      :disabled="inputDisabled" @click="shorten">
+        <svg v-if="inputDisabled" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
           <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
         </svg>
         <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
@@ -18,7 +18,7 @@
         </svg>
       </button>
     </div>
-    <MessageBox v-bind:urlprops="{longUrl, shortenedLink, isShortened}"/>
+    <MessageBox v-bind:urlprops="{longUrl, shortenedLink, status, error}"/>
   </div>
 </template>
 
@@ -38,8 +38,14 @@ export default {
         invalid: false,
         exitmoe: false,
       },
-      shortenedLink: 'please wait...',
-      isShortened: false,
+      shortenedLink: '',
+      status: 'ready', // ready, invalid, error, loading, success
+      error: null,
+    }
+  },
+  computed: {
+    inputDisabled() {
+      return this.status === 'success' || this.status === 'loading' || this.status === 'error';
     }
   },
   methods: {
@@ -52,18 +58,20 @@ export default {
       else return true;
     },
     shorten() {
-      if(this.urlValidate() === false) return;
-
-      this.isShortened = true;
+      this.status = 'loading';
+      if (this.urlValidate() === false) {
+        this.status = 'invalid';
+        return;
+      }
       (async () => {
         try {
           const response = await axios.post('https://api.exit.moe/shorten', { url: this.longUrl.url });
           this.shortenedLink = 'https://exit.moe/' + response.data.slug;
+          this.status = 'success';
         } catch (error) {
-          //TODO: 오류메시지 출력
-          console.log(error);
+          this.status = 'error';
+          this.error = error;
         }
-        // 재시도 버튼 활성화
       })();
     }
   }
