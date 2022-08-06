@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto justify-center font-light flex flex-col px-6">
     <div>
-      <h1 class="font-['lato'] font-thin text-gray-900 text-6xl md:text-8xl">exit.moe</h1>
+      <h1 class="font-['Lato'] font-thin text-gray-900 text-6xl md:text-8xl">exit.moe</h1>
     </div>
     <div class="flex justify-center mb-4">
       <input type="url" spellcheck="false" placeholder="https://example.com" autofocus autocomplete=”off”

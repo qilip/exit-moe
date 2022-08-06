@@ -1,3 +1,13 @@
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 100;
+  font-display: block;
+  src: local('Lato Hairline'),
+    url('/fonts/Lato-Hairline_exitmoe.woff2') format('woff2'),
+    url('/fonts/Lato-Hairline_exitmoe.woff') format('woff');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
